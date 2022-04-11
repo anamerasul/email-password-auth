@@ -21,7 +21,9 @@ function App() {
   return (
     <div className="flex justify-center">
       <div className="w-full max-w-xs">
+
         <form onSubmit={handleFormSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 my-32">
+          <h2 className="text-lg text-center bg-orange-400">Please Register</h2>
           <div className="mb-4">
             <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="Email">
               Email
@@ -36,7 +38,7 @@ function App() {
             <p className="text-red text-xs italic">Please choose a password.</p>
           </div>
           <div className="flex items-center justify-between">
-            <input type='submit' className="bg-blue-200 hover:bg-gray-600 hover:text-white text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" value='Sign in' />
+            <input type='submit' className="bg-blue-200 hover:bg-gray-600 hover:text-white text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" value='Sign up' />
             <a className="inline-block align-baseline font-bold text-sm text-blue hover:text-blue-darker" href="/">
               Forgot Password?
             </a>
