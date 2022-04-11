@@ -34,11 +34,13 @@ function App() {
       return
     }
 
-    if (!/^(?=.*[A-Z])/.test(password)) {
-      setError(' ')
+    if (/^(?=.*[A-Z])/.test(password)) {
+      setError('')
     }
 
     setValidated('true');
+
+    // setError('')
 
     createUserWithEmailAndPassword(auth, email, password)
       .then(result => {
@@ -59,7 +61,7 @@ function App() {
     return form
   }
 
-  console.log(error)
+  console.log(!error)
   return (
     <div className="flex justify-center">
       <div className="w-full max-w-xs">
