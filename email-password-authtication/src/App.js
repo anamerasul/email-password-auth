@@ -23,8 +23,8 @@ function App() {
       <div className="w-full max-w-xs">
         <form onSubmit={handleFormSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 my-32">
           <div className="mb-4">
-            <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="username">
-              Username
+            <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="Email">
+              Email
             </label>
             <input onBlur={handleEmailBlur} className="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline" id="email" type="email" placeholder="email" />
           </div>
