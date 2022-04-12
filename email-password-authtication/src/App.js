@@ -1,73 +1,97 @@
 import app from './firebase.init';
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
+import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { useState } from 'react';
 const auth = getAuth(app);
 
 function App() {
 
-  const [email, setEmail] = useState('')
-
-  const [password, setPassword] = useState('')
-
-  const [error, setError] = useState('password Should contain a Capital')
-
   const [validated, setValidated] = useState('false');
+  const [registered, setRegistered] = useState(false);
+  const [error, setError] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  console.log(typeof validated);
-  const handleEmailBlur = (event) => {
+  console.log(validated)
+
+  const handleEmailBlur = event => {
     setEmail(event.target.value);
 
+
   }
 
-  const handlePasswordBlur = (event) => {
+  const handlePasswordBlur = event => {
     setPassword(event.target.value);
-
   }
 
-  const handleFormSubmit = (event) => {
+  const handleRegisterdChange = event => {
+    setRegistered(event.target.checked)
+  }
+
+  const handleFormSubmit = event => {
     event.preventDefault();
-    const form = event.currentTarget;
-    console.log(form.checkValidity())
-    if (form.checkValidity() === false) {
+    // const form = event.currentTarget;
+    // if (!form.checkValidity() === false) {
+    //   event.stopPropagation();
+    //   return;
+    // }
 
-      event.stopPropagation();
-      return
+    if (!/(?=.*?[#?!@$%^&*-])/.test(password)) {
+      setError('Password Should contain at least one special character');
+      return;
     }
-
-    if (/^(?=.*[A-Z])/.test(password)) {
-      setError('')
-    }
-
     setValidated('true');
+    setError('');
 
-    // setError('')
+    if (registered) {
 
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(result => {
-        const user = result.user;
-        console.log(user)
-      })
-      .catch(error => {
+      console.log(registered)
+      signInWithEmailAndPassword(auth, email, password)
+        .then(result => {
+          const user = result.user;
+          console.log(user);
+          console.log(validated)
+          setEmail('');
+          setPassword('');
+        })
+        .catch(error => {
+          console.error(error);
+          setError(error.message);
+        })
 
-        console.error(error)
-      })
-
-
-    console.log(event, email, password);
-    event.preventDefault();
+      // setEmail('');
+      // setPassword('');
+    }
+    else {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(result => {
+          const user = result.user;
+          console.log(user);
+          setEmail('');
+          setPassword('');
+          console.log(validated)
+        })
+        .catch(error => {
+          console.error(error);
+          setError(error.message);
+        })
+    }
 
     console.log(validated)
 
-    return form
+
+
   }
 
-  console.log(!error)
+
+
+
+
   return (
     <div className="flex justify-center">
       <div className="w-full max-w-xs">
 
         <form noValidate validated={validated} onSubmit={handleFormSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 my-32">
-          <h2 className="text-lg text-center bg-orange-400">Please Register</h2>
+          <h2 className="text-lg text-center bg-orange-400">Please {registered ? "Login" : "Register"}</h2>
           <div className="mb-4">
             <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="Email">
               Email
@@ -88,12 +112,21 @@ function App() {
             <input onBlur={handlePasswordBlur} className="shadow appearance-none border border-red rounded w-full py-2 px-3 text-grey-darker mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="******************" required />
 
             {
-              !password ? <p className="text-red-500 text-xs italic">{error}.</p> : ''
+              !(/^(?=.*[A-Z])/.test(password)) ? <p className="text-red-500 text-xs italic">{error}</p> : ''
             }
             <p className="text-red text-xs italic">Please choose a password.</p>
           </div>
+
+          <div className="flex items-start mb-6">
+            <div className="flex items-center h-5">
+              <input id="terms" onChange={handleRegisterdChange} aria-describedby="terms" type="checkbox" className="w-4 h-4 bg-gray-50 rounded border border-gray-300 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required />
+            </div>
+            <div className="ml-3 text-sm">
+              <label htmlFor="terms" className="font-medium text-gray-900 dark:text-gray-300">Already register</label>
+            </div>
+          </div>
           <div className="flex items-center justify-between">
-            <input type='submit' className="bg-blue-200 hover:bg-gray-600 hover:text-white text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" value='Sign up' />
+            <input type='submit' className="bg-blue-200 hover:bg-gray-600 hover:text-white text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" value={registered ? 'login' : 'sign up'} />
             <a className="inline-block align-baseline font-bold text-sm text-blue hover:text-blue-darker" href="/">
               Forgot Password?
             </a>
