@@ -1,5 +1,5 @@
 import app from './firebase.init';
-import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth'
 import { useState } from 'react';
 const auth = getAuth(app);
 
@@ -68,7 +68,10 @@ function App() {
           console.log(user);
           setEmail('');
           setPassword('');
+          verifyEmail()
           console.log(validated)
+
+
         })
         .catch(error => {
           console.error(error);
@@ -80,6 +83,25 @@ function App() {
 
 
 
+  }
+
+
+  const verifyEmail = () => {
+    sendEmailVerification(auth.currentUser)
+
+      .then(() => {
+        console.log('varied email')
+      })
+  }
+
+  const hanndlePasswordReset = () => {
+
+    console.log('reset')
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+
+        console.log('email sent')
+      })
   }
 
 
@@ -127,9 +149,9 @@ function App() {
           </div>
           <div className="flex items-center justify-between">
             <input type='submit' className="bg-blue-200 hover:bg-gray-600 hover:text-white text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" value={registered ? 'login' : 'sign up'} />
-            <a className="inline-block align-baseline font-bold text-sm text-blue hover:text-blue-darker" href="/">
+            <button onClick={hanndlePasswordReset} className="inline-block align-baseline font-bold text-sm text-blue hover:text-blue-darker">
               Forgot Password?
-            </a>
+            </button>
           </div>
         </form>
       </div>
