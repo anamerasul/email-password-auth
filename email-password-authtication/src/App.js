@@ -1,5 +1,5 @@
 import app from './firebase.init';
-import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { useState } from 'react';
 const auth = getAuth(app);
 
@@ -11,10 +11,21 @@ function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const [name, setName] = useState('')
+
+  const [user, setUser] = useState('')
+
   console.log(validated)
+
+  const handleNameBlur = (e) => {
+
+    setName(e.target.value)
+    setUser(e.target.value)
+  }
 
   const handleEmailBlur = event => {
     setEmail(event.target.value);
+
 
 
   }
@@ -26,6 +37,8 @@ function App() {
   const handleRegisterdChange = event => {
     setRegistered(event.target.checked)
   }
+
+
 
   const handleFormSubmit = event => {
     event.preventDefault();
@@ -69,6 +82,7 @@ function App() {
           setEmail('');
           setPassword('');
           verifyEmail()
+          setUserName();
           console.log(validated)
 
 
@@ -85,6 +99,25 @@ function App() {
 
   }
 
+  const setUserName = () => {
+    updateProfile(auth.currentUser, {
+      displayName: name
+
+
+
+    })
+      .then((e) => {
+        console.log('update profile', e)
+
+      })
+      .catch(error => {
+
+        setError(error)
+      })
+
+    setUser(auth.currentUser)
+
+  }
 
   const verifyEmail = () => {
     sendEmailVerification(auth.currentUser)
@@ -104,6 +137,8 @@ function App() {
       })
   }
 
+  console.log(user.displayName)
+
 
 
 
@@ -112,8 +147,25 @@ function App() {
     <div className="flex justify-center">
       <div className="w-full max-w-xs">
 
+        <p>{user.displayName}</p>
+
+
         <form noValidate validated={validated} onSubmit={handleFormSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 my-32">
           <h2 className="text-lg text-center bg-orange-400">Please {registered ? "Login" : "Register"}</h2>
+          {
+
+            !registered ? <div className="mb-4">
+              <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="name">
+                Name
+              </label>
+
+              <input onBlur={handleNameBlur} className="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline" id="name" type="text" placeholder="name" required />
+              {
+                !name ? <p className="text-red-500 text-xs italic">Please fill out this name field.</p> : ''
+              }
+            </div> : ''
+          }
+
           <div className="mb-4">
             <label className="block text-grey-darker text-sm font-bold mb-2" htmlFor="Email">
               Email
@@ -155,6 +207,8 @@ function App() {
           </div>
         </form>
       </div>
+
+
     </div>
   );
 }
